@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AER Certified Eco-Tourism Locations</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #map { width: 100%; height: 100vh; }
+        h1 {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(255,255,255,0.92);
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            white-space: nowrap;
+        }
+        .popup-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+        .popup-village { color: #555; font-size: 12px; margin-bottom: 6px; }
+        .popup-link a {
+            color: #2e7d32;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .popup-link a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>AER Certified Eco-Tourism Locations</h1>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const locations = [
+            {
+                name: "Dominic Boutique",
+                village: "Cloașterf, Mureș",
+                lat: 46.1570,
+                lng: 24.9280,
+                website: "https://eco-romania.ro/colinele-transilvaniei/dominic-boutique/"
+            },
+            {
+                name: "Pensiunea Potcoava Mountain Hideaway",
+                village: "Runcu, Dâmbovița",
+                lat: 45.1850,
+                lng: 25.1750,
+                website: "https://eco-romania.ro/alte-zone/pensiunea-potcoava/"
+            },
+            {
+                name: "Pensiunea Veseud 11",
+                village: "Veseud, Sibiu",
+                lat: 45.9560,
+                lng: 24.4370,
+                website: "https://eco-romania.ro/colinele-transilvaniei/pensiunea-veseud11/"
+            },
+            {
+                name: "Casa Hann",
+                village: "Apold, Mureș",
+                lat: 46.1150,
+                lng: 24.7640,
+                website: "https://eco-romania.ro/colinele-transilvaniei/casa-hann/"
+            },
+            {
+                name: "Casa Cânda",
+                village: "Sălașu de Sus, Hunedoara",
+                lat: 45.5400,
+                lng: 22.8900,
+                website: "https://eco-romania.ro/tara-hategului-retezat/casa-canda/"
+            },
+            {
+                name: "Cabana Cetățile Ponorului",
+                village: "Padiș, Bihor",
+                lat: 46.5650,
+                lng: 22.7150,
+                website: "https://eco-romania.ro/alte-zone/cabana-cetatile-ponorului/"
+            },
+            {
+                name: "Vila Silva",
+                village: "Hațeg, Hunedoara",
+                lat: 45.6060,
+                lng: 22.9500,
+                website: "https://eco-romania.ro/tara-hategului-retezat/vila-silva/"
+            },
+            {
+                name: "Valea Lupului",
+                village: "Valea Lupului, Buzău",
+                lat: 45.3200,
+                lng: 26.3100,
+                website: "https://www.valealupului.com/"
+            },
+            {
+                name: "Casa Rudi & Ella",
+                village: "Săliște, Sibiu",
+                lat: 45.7940,
+                lng: 24.0560,
+                website: "https://eco-romania.ro/marginimea-sibiului/casa-rudi-and-ella/"
+            },
+            {
+                name: "Pensiunea Casa cu Povești",
+                village: "Mărginimea Sibiului, Sibiu",
+                lat: 45.7800,
+                lng: 24.0800,
+                website: "https://asociatiaaer.ro/produse-certificate/"
+            },
+            {
+                name: "Alma Via Guesthouse",
+                village: "Alma Vii, Sibiu",
+                lat: 46.1070,
+                lng: 24.5600,
+                website: "https://eco-romania.ro/colinele-transilvaniei/alma-via-guesthouse/"
+            },
+            {
+                name: "Bassen Pension",
+                village: "Bazna, Sibiu",
+                lat: 46.2770,
+                lng: 24.4020,
+                website: "https://eco-romania.ro/colinele-transilvaniei/bassen-pension/"
+            },
+            {
+                name: "Alma Vii 104",
+                village: "Alma Vii, Sibiu",
+                lat: 46.1090,
+                lng: 24.5580,
+                website: "https://eco-romania.ro/colinele-transilvaniei/alma-vii-104/"
+            },
+            {
+                name: "Copșamare Guesthouses",
+                village: "Copșa Mare, Sibiu",
+                lat: 46.1350,
+                lng: 24.5150,
+                website: "https://asociatiaaer.ro/copsamare-guesthouses/"
+            },
+            {
+                name: "Pensiunea Oppidum",
+                village: "Biertan, Sibiu",
+                lat: 46.1310,
+                lng: 24.5230,
+                website: "https://eco-romania.ro/colinele-transilvaniei/pensiunea-oppidum/"
+            },
+            {
+                name: "Casa Noah",
+                village: "Richiș, Sibiu",
+                lat: 46.1200,
+                lng: 24.5850,
+                website: "https://eco-romania.ro/colinele-transilvania/casa-noah-experience/"
+            },
+            {
+                name: "Villa Abbatis",
+                village: "Apoș, Sibiu",
+                lat: 46.0800,
+                lng: 24.5400,
+                website: "https://www.villaabbatis.com/"
+            },
+            {
+                name: "Werk 2",
+                village: "Saschiz, Mureș",
+                lat: 46.1730,
+                lng: 24.9590,
+                website: "https://eco-romania.ro/colinele-transilvania/werk-2/"
+            },
+            {
+                name: "Camping Zori",
+                village: "Cloașterf, Mureș",
+                lat: 46.1590,
+                lng: 24.9260,
+                website: "https://eco-romania.ro/colinele-transilvania/camping-zori/"
+            },
+            {
+                name: "Casa dintre Pini",
+                village: "Agapia, Neamț",
+                lat: 47.1550,
+                lng: 26.0950,
+                website: "https://eco-romania.ro/tinutul-zimbrului/casa-dintre-pini/"
+            },
+            {
+                name: "Agapia Agapescu",
+                village: "Agapia, Neamț",
+                lat: 47.1530,
+                lng: 26.0980,
+                website: "https://eco-romania.ro/tinutul-zimbrului/agapia-agapescu/"
+            }
+        ];
+
+        const map = L.map('map').setView([46.0, 24.5], 7);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+            maxZoom: 19
+        }).addTo(map);
+
+        const greenIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        const bounds = [];
+
+        locations.forEach(loc => {
+            const marker = L.marker([loc.lat, loc.lng], { icon: greenIcon }).addTo(map);
+            marker.bindPopup(`
+                <div class="popup-name">${loc.name}</div>
+                <div class="popup-village">${loc.village}</div>
+                <div class="popup-link"><a href="${loc.website}" target="_blank">${loc.website}</a></div>
+            `);
+            bounds.push([loc.lat, loc.lng]);
+        });
+
+        map.fitBounds(bounds, { padding: [40, 40] });
+    </script>
+</body>
+</html>
